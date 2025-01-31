@@ -1,68 +1,106 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
+
 <div class="container mt-4">
     <h2 class="mb-4">Dein Profil</h2>
 
     <div class="card shadow p-4">
-        <div class="row">
-            <!-- Profilbild links -->
-            <div class="col-md-4 text-center">
-                {% if user.profile_picture %}
-                    <img src="{{ user.profile_picture.url }}" alt="Profilbild" class="img-fluid rounded-circle mb-3" width="150">
-                {% else %}
-                    <img src="{% static 'images/default_profile.jpg' %}" alt="Profilbild" class="img-fluid rounded-circle mb-3" width="150">
-                {% endif %}
-
-                <!-- Profilbild-Buttons -->
-                <div class="d-flex justify-content-center mt-2">
-                    <!-- Datei hochladen -->
-                    <form method="post" enctype="multipart/form-data" action="{% url 'profile' %}" style="display: inline;">
-                        {% csrf_token %}
-                        <input type="hidden" name="upload_picture" value="1">
-                        <label class="btn btn-primary btn-sm me-2">
-                            Neue Datei
-                            <input type="file" name="profile_picture" class="d-none" onchange="this.form.submit();">
-                        </label>
-                    </form>
-
-                    <!-- Profilbild löschen -->
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="row">
+                <!-- Profilbild links -->
+                <div class="col-md-4 text-center">
                     {% if user.profile_picture %}
-                    <form method="post" action="{% url 'delete_profile_picture' %}" style="display: inline;">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-danger btn-sm"
-                                onclick="return confirm('Möchtest du dein Profilbild wirklich löschen?');">
-                            Löschen
-                        </button>
-                    </form>
+                        <img id="preview-image" src="{{ user.profile_picture.url }}" alt="Profilbild"
+                             class="img-fluid rounded-circle mb-3" width="150">
+                    {% else %}
+                        <img id="preview-image" src="{% static 'images/default_profile.jpg' %}" alt="Profilbild"
+                             class="img-fluid rounded-circle mb-3" width="150">
                     {% endif %}
+
+                    <!-- Buttons für Hochladen & Löschen in einer Zeile -->
+                    <div class="d-flex justify-content-center gap-2">
+                        <label class="btn btn-primary btn-sm">
+                            Bild hochladen
+                            <input type="file" name="profile_picture" id="profile-picture-input" class="d-none">
+                        </label>
+
+                        {% if user.profile_picture %}
+                        <a href="{% url 'delete_profile_picture' %}" class="btn btn-danger btn-sm"
+                           onclick="return confirm('Möchtest du dein Profilbild wirklich löschen?');">
+                            Löschen
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Benutzerinformationen RECHTS -->
+                <div class="col-md-8">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Vorname:</label>
+                            {{ form.first_name }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Nachname:</label>
+                            {{ form.last_name }}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Benutzername:</label>
+                        {{ form.username }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Email:</label>
+                        {{ form.email }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Adresse:</label>
+                        {{ form.address }}
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Postleitzahl:</label>
+                            {{ form.zip_code }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Ort:</label>
+                            {{ form.city }}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Mobiltelefon:</label>
+                        {{ form.mobile }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Über mich:</label>
+                        {{ form.bio }}
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100">Speichern</button>
                 </div>
             </div>
-
-            <!-- Tabelle mit Benutzerinfos -->
-            <div class="col-md-8">
-                <form method="post" enctype="multipart/form-data" action="{% url 'profile' %}">
-                    {% csrf_token %}
-                    
-                    <table class="table table-borderless">
-                        <tr>
-                            <th class="fw-bold">Benutzername:</th>
-                            <td>{{ form.username }}</td>
-                        </tr>
-                        <tr>
-                            <th class="fw-bold">Email:</th>
-                            <td>{{ form.email }}</td>
-                        </tr>
-                        <tr>
-                            <th class="fw-bold">Bio:</th>
-                            <td>{{ form.bio }}</td>
-                        </tr>
-                    </table>
-
-                    <button type="submit" class="btn btn-success mt-3">Speichern</button>
-                </form>
-            </div>
-        </div>
+        </form>
     </div>
 </div>
+
+<!-- Vorschau für das neue Profilbild -->
+<script>
+document.getElementById("profile-picture-input").addEventListener("change", function(event) {
+    var reader = new FileReader();
+    reader.onload = function(){
+        var output = document.getElementById("preview-image");
+        output.src = reader.result;
+    };
+    reader.readAsDataURL(event.target.files[0]);
+});
+</script>
+
 {% endblock %}

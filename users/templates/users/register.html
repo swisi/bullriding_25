@@ -1,38 +1,112 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
-<div class="container mt-5 d-flex justify-content-center">
-    <div class="card shadow p-4" style="max-width: 500px; width: 100%;">
+<div class="container mt-5">
+    <div class="card shadow p-4">
         <h2 class="text-center mb-4">Registrieren</h2>
-        <form method="post">
+
+        <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
-            
-            <div class="mb-3">
-                <label class="form-label">Benutzername</label>
-                {{ form.username }}
-            </div>
+            <div class="row">
+                <!-- Profilbild & Upload -->
+                <div class="col-md-4 text-center">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Profilbild</label>
+                        <div>
+                            <img id="preview-image" 
+                                 src="{% static 'images/default_profile.jpg' %}" 
+                                 alt="Profilbild Vorschau" 
+                                 class="img-fluid rounded-circle mb-3" width="150">
+                        </div>
+                        <label class="btn btn-primary btn-sm">
+                            Bild hochladen
+                            <input type="file" name="profile_picture" id="profile-picture-input" class="d-none">
+                        </label>
+                    </div>
+                </div>
 
-            <div class="mb-3">
-                <label class="form-label">E-Mail</label>
-                {{ form.email }}
-            </div>
+                <!-- Benutzerinformationen -->
+                <div class="col-md-8">
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Benutzername</label>
+                        {{ form.username }}
+                        <small class="text-danger">{{ form.username.errors }}</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">E-Mail</label>
+                        {{ form.email }}
+                        <small class="text-danger">{{ form.email.errors }}</small>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Vorname</label>
+                            {{ form.first_name }}
+                            <small class="text-danger">{{ form.first_name.errors }}</small>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Nachname</label>
+                            {{ form.last_name }}
+                            <small class="text-danger">{{ form.last_name.errors }}</small>
+                        </div>
+                    </div>
 
-            <div class="mb-3">
-                <label class="form-label">Passwort</label>
-                {{ form.password1 }}
-            </div>
+                    <div class="mb-3">
+                        <label class="form-label">Adresse</label>
+                        {{ form.address }}
+                    </div>
 
-            <div class="mb-3">
-                <label class="form-label">Passwort bestätigen</label>
-                {{ form.password2 }}
-            </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Postleitzahl</label>
+                            {{ form.zip_code }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Ort</label>
+                            {{ form.city }}
+                        </div>
+                    </div>
 
-            <button type="submit" class="btn btn-success w-100">Registrieren</button>
+                    <div class="mb-3">
+                        <label class="form-label">Mobiltelefon</label>
+                        {{ form.mobile }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Über mich</label>
+                        {{ form.bio }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Passwort</label>
+                        {{ form.password1 }}
+                        <small class="text-danger">{{ form.password1.errors }}</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Passwort bestätigen</label>
+                        {{ form.password2 }}
+                        <small class="text-danger">{{ form.password2.errors }}</small>
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100">Registrieren</button>
+                </div>
+            </div>
         </form>
-
-        <div class="text-center mt-3">
-            <p>Hast du schon ein Konto? <a href="{% url 'login' %}">Hier einloggen</a></p>
-        </div>
     </div>
 </div>
+
+<!-- Vorschau für Profilbild-Upload -->
+<script>
+document.getElementById("profile-picture-input").addEventListener("change", function(event) {
+    var reader = new FileReader();
+    reader.onload = function(){
+        var output = document.getElementById("preview-image");
+        output.src = reader.result;
+    };
+    reader.readAsDataURL(event.target.files[0]);
+});
+</script>
 {% endblock %}

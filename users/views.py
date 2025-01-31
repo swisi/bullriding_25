@@ -25,17 +25,9 @@ def profile(request):
     user = request.user
 
     if request.method == "POST":
-        if "upload_picture" in request.POST:
-            # Nur das Profilbild aktualisieren
-            if "profile_picture" in request.FILES:
-                user.profile_picture = request.FILES["profile_picture"]
-                user.save()
-            return redirect("profile")
-
-        # Gesamtes Profil speichern
-        form = ProfileUpdateForm(request.POST, request.FILES, instance=user)
+        form = ProfileUpdateForm(request.POST, request.FILES, instance=user)  # request.FILES sicherstellen!
         if form.is_valid():
-            form.save()
+            form.save()  # Speichert sowohl das Bild als auch die restlichen Formulardaten
             return redirect("profile")
     else:
         form = ProfileUpdateForm(instance=user)
