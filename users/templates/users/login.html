@@ -1,11 +1,29 @@
 {% extends "base.html" %}
-
+{% load static %}
 {% block content %}
-  <h2>Login</h2>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Login</button>
-  </form>
-  <p>Noch kein Konto? <a href="{% url 'register' %}">Hier registrieren</a></p>
+<div class="container mt-5 d-flex justify-content-center">
+    <div class="card shadow p-4" style="max-width: 400px; width: 100%;">
+        <h2 class="text-center mb-4">Login</h2>
+        <form method="post">
+            {% csrf_token %}
+            
+            <table class="table table-borderless">
+                <tr>
+                    <th class="fw-bold">Benutzername:</th>
+                    <td>{{ form.username }}</td>
+                </tr>
+                <tr>
+                    <th class="fw-bold">Passwort:</th>
+                    <td>{{ form.password }}</td>
+                </tr>
+            </table>
+
+            <button type="submit" class="btn btn-primary w-100">Einloggen</button>
+        </form>
+
+        <div class="text-center mt-3">
+            <p>Kein Konto? <a href="{% url 'register' %}">Hier registrieren</a></p>
+        </div>
+    </div>
+</div>
 {% endblock %}

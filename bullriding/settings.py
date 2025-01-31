@@ -121,4 +121,7 @@ if not DEBUG:
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+LOGIN_URL = '/users/login/'             # Login Url
 LOGIN_REDIRECT_URL = '/users/profile/'  # Weiterleitung nach erfolgreichem Login
+LOGOUT_REDIRECT_URL = '/users/login/'   # Nach Logout zurück zur Login-Seite
+

@@ -1,3 +1,6 @@
+import os
+
+from django.conf import settings
 from django.shortcuts import render, redirect
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
@@ -18,14 +21,40 @@ def register(request):
 
 @login_required
 def profile(request):
-    """Zeigt und bearbeitet das Benutzerprofil."""
+    """Profil anzeigen & bearbeiten"""
+    user = request.user
+
     if request.method == "POST":
-        form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user)
+        if "upload_picture" in request.POST:
+            # Nur das Profilbild aktualisieren
+            if "profile_picture" in request.FILES:
+                user.profile_picture = request.FILES["profile_picture"]
+                user.save()
+            return redirect("profile")
+
+        # Gesamtes Profil speichern
+        form = ProfileUpdateForm(request.POST, request.FILES, instance=user)
         if form.is_valid():
             form.save()
-            return redirect('profile')  # Bleibt auf der Profilseite nach dem Speichern
+            return redirect("profile")
     else:
-        form = ProfileUpdateForm(instance=request.user)
+        form = ProfileUpdateForm(instance=user)
+
+    return render(request, "users/profile.html", {"form": form})
+
+@login_required
+def delete_profile_picture(request):
+    """Löscht das Profilbild des angemeldeten Benutzers und setzt ein Platzhalterbild"""
+    user = request.user
+    if user.profile_picture:
+        # Lösche die Datei vom Server
+        file_path = os.path.join(settings.MEDIA_ROOT, str(user.profile_picture))
+        if os.path.exists(file_path):
+            os.remove(file_path)
+        
+        # Setze das Profilbild auf None (damit der Platzhalter angezeigt wird)
+        user.profile_picture = None
+        user.save()
     
-    return render(request, 'users/profile.html', {'form': form})
+    return redirect('profile')
 

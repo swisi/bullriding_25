@@ -1,6 +1,28 @@
 {% extends "base.html" %}
-
+{% load static %}
 {% block content %}
-    <h1>Willkommen bei Bullriding 25!</h1>
-    <p>Dies ist die Startseite.</p>
+<div class="container mt-4">
+    <h2 class="mb-4">Willkommen bei Bullriding 25</h2>
+
+    {% if user.is_authenticated %}
+        <!-- Inhalte für eingeloggte Benutzer -->
+        <div class="alert alert-success">
+            <h4>Hallo, {{ user.username }}! 👋</h4>
+            <p>Hier findest du deine neuesten Spielstände, Rankings & Infos.</p>
+            <a href="{% url 'profile' %}" class="btn btn-primary">Mein Profil</a>
+        </div>
+    {% else %}
+        <!-- Öffentliche Inhalte für Gäste -->
+        <div class="alert alert-info">
+            <h4>Willkommen Gast! 🎉</h4>
+            <p>Melde dich an, um auf alle Funktionen zuzugreifen!</p>
+            <a href="{% url 'login' %}" class="btn btn-success">Jetzt einloggen</a>
+            <a href="{% url 'register' %}" class="btn btn-outline-primary">Registrieren</a>
+        </div>
+    {% endif %}
+
+    <!-- Öffentliche Inhalte -->
+    <h3>Neuigkeiten & Updates</h3>
+    <p>Hier werden künftig News, Events und Infos für alle angezeigt.</p>
+</div>
 {% endblock %}

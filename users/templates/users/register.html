@@ -1,10 +1,38 @@
 {% extends "base.html" %}
-
+{% load static %}
 {% block content %}
-  <h2>Registrierung</h2>
-  <form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Registrieren</button>
-  </form>
+<div class="container mt-5 d-flex justify-content-center">
+    <div class="card shadow p-4" style="max-width: 500px; width: 100%;">
+        <h2 class="text-center mb-4">Registrieren</h2>
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="mb-3">
+                <label class="form-label">Benutzername</label>
+                {{ form.username }}
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">E-Mail</label>
+                {{ form.email }}
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Passwort</label>
+                {{ form.password1 }}
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Passwort bestätigen</label>
+                {{ form.password2 }}
+            </div>
+
+            <button type="submit" class="btn btn-success w-100">Registrieren</button>
+        </form>
+
+        <div class="text-center mt-3">
+            <p>Hast du schon ein Konto? <a href="{% url 'login' %}">Hier einloggen</a></p>
+        </div>
+    </div>
+</div>
 {% endblock %}
